@@ -14,5 +14,7 @@ namespace Student_edu.Core.IRepositories
          Task<GenericResponse> Delete(T entity);
          Task<GenericResponse> Update(T entity);
          Task<GenericResponse> Add(T entity);
-        }
+         Task<T?> GetById(Guid id);
+
+    }
 }

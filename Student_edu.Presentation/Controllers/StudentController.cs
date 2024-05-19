@@ -22,31 +22,21 @@ namespace Student_edu.Presentation.Controllers
         public async Task<IActionResult> AddStudent(AddStudentDTO student)
         {
             var result = await _studentService.Add(student);
-            if (result)
-                return Ok();
+            if (result.Success)
+                return Ok(result);
             else
             {
                 return BadRequest(result);
             }
         }
 
-        [HttpGet]
-        [Route("GetSudentEmail")]
-        public async Task<GenericResponse> GetStudentEmail(int id)
-        {
-            //SOLID pRINCIPLES
-            var student = new StudentResponse();
-            student.FullName = "Ahmad Hasan";
-            student.Email = "ahmad@gmail.com";
-            return student;
-        }
         [HttpDelete]
         [Route("Delete")]
         public async Task<IActionResult> Deletestudent(Guid id)
         {
             var result = await _studentService.Delete(id);
-            if (result)
-                return Ok();
+            if (result.Success)
+                return Ok(result);
             else
             {
                 return BadRequest(result);
@@ -70,7 +60,7 @@ namespace Student_edu.Presentation.Controllers
         public async Task<IActionResult> update(UpdateStudentDTO student)
         {
             var result = await _studentService.Update(student);
-            if (result) return Ok();
+            if (result.Success) return Ok();
             else
             {
                 return BadRequest("no data");

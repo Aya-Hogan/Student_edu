@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Student_edu.Core.DTO
 {
-    public  class GenericResponse // change to ginrec response
+    public  class GenericResponse 
     {
         public bool Success { get; set; }
         public string? Message { get; set; }

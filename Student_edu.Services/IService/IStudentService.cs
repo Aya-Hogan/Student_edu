@@ -13,7 +13,7 @@ namespace Student_edu.Services.IService
         public Task <List<StudentResponseDto>> GetAll();
         public Task  <GenericResponse> Delete(Guid id);
         public Task <GenericResponse> Update(UpdateStudentDTO student);
-        public Task <GenericResponse> Add(AddStudentDTO student);  
+        public Task <GenericResponse> Add(AddStudentDTO student);
 
     }
 }

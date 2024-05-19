@@ -33,7 +33,7 @@ namespace Student_edu.Infrastructure.Repository
             var entity = await _dbSet.FindAsync(id);
             if (entity == null)
                 return new GenericResponse { Success = false, Message = "Entity not found." };
-            _dbSet.Update(entity);
+            _dbSet.Remove(entity);
             await _context.SaveChangesAsync();
             return new GenericResponse { Success = true, Message = "Entity removed successfully." };
         }
@@ -42,6 +42,11 @@ namespace Student_edu.Infrastructure.Repository
         public async Task<IEnumerable<T?>> GetAll()
         {
             return await _dbSet.ToListAsync();  
+        }
+
+        public async Task<T?> GetById(Guid id)
+        {
+            return await _dbSet.FindAsync(id);
         }
 
         public async Task<GenericResponse> Update(T entity)
