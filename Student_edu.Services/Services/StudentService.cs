@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Student_edu.Core.DTO;
 using Student_edu.Core.IRepositories;
+using Student_edu.Core.Mappers;
 using Student_edu.Core.Models;
 using Student_edu.Infrastructure.DBConnection;
 using Student_edu.Services.IService;
@@ -27,18 +28,7 @@ namespace Student_edu.Services.Services
             try
             {
 
-                Student new_student = new Student()
-                {
-                    Id = Guid.NewGuid(),
-                    Name = student.Name,
-                    Address = student.Address,
-                    age = student.age,
-                    PhoneNumber = student.PhoneNumber,
-                    Email = student.Email,
-                    Gender = student.Gender,
-                    Nationality = student.Nationality,
-                    DateOfBirth = student.DateOfBirth
-                };
+                var new_student = EntityDtoMapper<Student, AddStudentDTO>.MapToEntity(student);
                 var result = await _studentRepository.Add(new_student);
                 return result;
 
@@ -66,59 +56,36 @@ namespace Student_edu.Services.Services
             }
         }
 
-        async Task<List<StudentResponseDto>> IStudentService.GetAll()
+        async Task<IEnumerable<StudentResponseDto>> IStudentService.GetAll()
         {
-            try 
-            { 
-             
-                List<StudentResponseDto> dtoList = new List<StudentResponseDto>();
+            try
+            {
+                var students = await _studentRepository.GetAll();
 
-                var student = await _studentRepository.GetAll();
-                if(student != null) 
-                { 
-                  foreach (var student_item in student)
-                    {
-                        var studentdto = new StudentResponseDto()
-                        {
-                            Name = student_item.Name,
-                            Address = student_item.Address,
-                            Email = student_item.Email,
-                            Gender = student_item.Gender,
-                            Nationality = student_item.Nationality,
-                            PhoneNumber = student_item.PhoneNumber,
-                            DateOfBirth= student_item.DateOfBirth,
-                            age = student_item.age
-                        };
-                        dtoList.Add(studentdto);
-                    }
-                
+                // Check if students is null and return an empty list if true
+                if (students == null)
+                {
+                    return new List<StudentResponseDto>();
                 }
 
-                return dtoList;
+                // Use the MapToDto method to map the list of entities to a list of DTOs
+                var studentDtos = EntityDtoMapper<Student, StudentResponseDto>.MapToDto(students);
+                return studentDtos;
             }
-
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                throw ex;
+                // Log the exception here if needed
+                throw new ApplicationException("An error occurred while retrieving students.", ex);
             }
         }
 
          async Task<GenericResponse> IStudentService.Update(UpdateStudentDTO student)
         {
+           
             try
             {
-                var Dbstudent = await _studentRepository.GetById(student.Id);
-
-                Dbstudent.Name = student.Name;
-                Dbstudent.Email = student.Email;
-                Dbstudent.Address = student.Address;
-                Dbstudent.PhoneNumber = student.PhoneNumber;
-                Dbstudent.DateOfBirth = student.DateOfBirth;
-                Dbstudent.Nationality = student.Nationality;
-                Dbstudent.Gender = student.Gender;
-                Dbstudent.age = student.age;
-
-                var result = await _studentRepository.Update(Dbstudent);
+                var new_student = EntityDtoMapper<Student, UpdateStudentDTO>.MapToEntity(student);
+                var result = await _studentRepository.Update(new_student);
                 return result;
             }
             catch (Exception ex)
@@ -128,63 +95,3 @@ namespace Student_edu.Services.Services
         }
     }
 }
-
-
-//public async Task<StudentResponse> Add(AddStudentDTO student)
-//{
-//    var new_student = new Student()
-//    {
-//        Id = Guid.NewGuid(),
-//        Name = student.Name,
-//        Address = student.Address,
-//        age = student.age,
-//        PhoneNumber = student.PhoneNumber,
-//        Email = student.Email,
-//        Gender = student.Gender,
-//        Nationality = student.Nationality,
-//        DateOfBirth = student.DateOfBirth
-//    };
-
-//    var result = await _studentRepository.Add(new_student);
-//    return result;
-
-//}
-
-//async Task<StudentResponse> IStudentService.Delete(System.Guid id)
-//{
-//    var result = await _studentRepository.Delete(id);
-//    return result;
-//}
-
-//public async Task<List<StudentResponseDto>> GetAll()
-//{
-//    return await _dbContext.Students.ToListAsync();
-//}
-
-//public async Task<StudentResponse> Update(UpdateStudentDTO student)
-//{
-//    try
-//    {
-//        var Dbstudent = await _dbContext.Students.FindAsync(student.Id);
-//        if (Dbstudent == null)
-//        {
-//            return false;
-//        }
-
-//        Dbstudent.Name = student.Name;
-//        Dbstudent.Email = student.Email;
-//        Dbstudent.Address = student.Address;
-//        Dbstudent.PhoneNumber = student.PhoneNumber;
-//        Dbstudent.DateOfBirth = student.DateOfBirth;
-//        Dbstudent.Nationality = student.Nationality;
-//        Dbstudent.Gender = student.Gender;
-//        Dbstudent.age = student.age;
-//        _dbContext.Students.Update(Dbstudent);
-//        await _dbContext.SaveChangesAsync();
-//        return true;
-//    }
-//    catch (Exception ex)
-//    {
-//        throw ex;
-//    }
-//}
